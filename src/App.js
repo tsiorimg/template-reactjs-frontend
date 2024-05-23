@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function App() {
+  const [tasks, setTasks] = useState('');
+  const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
+
+  useEffect(() => {
+    axios.get(`${API_URL}/api/task`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+      .then(response => {
+        setTasks(response.data.message);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the tasks!', error);
+      });
+  }, [API_URL]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Tasks</h1>
+      <p>{tasks}</p>
     </div>
   );
 }
